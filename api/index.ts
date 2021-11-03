@@ -31,7 +31,7 @@ router.get(
       ctx.response.headers.set(name, res.headers.get(name)!);
     }
     ctx.response.status = res.status;
-    ctx.response.body = res.body;
+    ctx.response.body = await res.text();
   },
 );
 
