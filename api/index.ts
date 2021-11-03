@@ -11,7 +11,25 @@ router.get(
       ...req,
     });
     console.log(`fetched.`);
-    ctx.response.headers = res.headers;
+    const debugLines = (await res.clone().text()).split("\n");
+    console.log([debugLines.at(0), "...", debugLines.at(-1)]);
+    for (
+      const name of [
+        "Content-Type",
+        "X-Content-Type-Options",
+        "X-Frame-Options",
+        "Date",
+        "Etag",
+        "Vary",
+        "Via",
+        "X-This-Is-Not-A-Vulnerability",
+        "Strict-Transport-Security",
+      ]
+    ) {
+      if (!res.headers.has(name)) continue;
+
+      ctx.response.headers.set(name, res.headers.get(name)!);
+    }
     ctx.response.status = res.status;
     ctx.response.body = res.body;
   },
