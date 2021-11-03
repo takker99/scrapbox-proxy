@@ -11,8 +11,6 @@ router.get(
       ...req,
     });
     console.log(`fetched.`);
-    const debugLines = (await res.clone().text()).split("\n");
-    console.log([debugLines.at(0), "...", debugLines.at(-1)]);
     for (
       const name of [
         "Content-Type",
