@@ -11,9 +11,30 @@ router.get(
       ...req,
     });
     console.log(`fetched.`);
-    ctx.response.headers = res.headers;
+    for (
+      const name of [
+        "Content-Type",
+        "X-Content-Type-Options",
+        "X-Frame-Options",
+        "Date",
+        "Etag",
+        "Vary",
+        "Via",
+        "X-This-Is-Not-A-Vulnerability",
+        "Strict-Transport-Security",
+      ]
+    ) {
+      if (!res.headers.has(name)) continue;
+
+      ctx.response.headers.set(name, res.headers.get(name)!);
+    }
+    ctx.response.headers.set("Cache-Control", "no-cache, max-age=0");
     ctx.response.status = res.status;
-    ctx.response.body = res.body;
+    const mimeType = ctx.response.headers.get("Content-Type") ?? "text/plain";
+    console.log({ mimeType });
+    ctx.response.body = mimeType.startsWith("image")
+      ? res.body
+      : await res.text();
   },
 );
 
