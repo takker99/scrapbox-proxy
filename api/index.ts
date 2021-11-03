@@ -33,6 +33,7 @@ router.get(
     ctx.response.headers.set("Cache-Control", "no-cache, max-age=0");
     ctx.response.status = res.status;
     const mimeType = ctx.response.headers.get("Content-Type") ?? "text/plain";
+    console.log({ mimeType });
     ctx.response.body = mimeType.startsWith("image")
       ? res.body
       : await res.text();
