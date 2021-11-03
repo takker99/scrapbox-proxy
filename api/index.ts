@@ -30,8 +30,12 @@ router.get(
 
       ctx.response.headers.set(name, res.headers.get(name)!);
     }
+    ctx.response.headers.set("Cache-Control", "no-cache, max-age=0");
     ctx.response.status = res.status;
-    ctx.response.body = await res.text();
+    const mimeType = ctx.response.headers.get("Content-Type") ?? "text/plain";
+    ctx.response.body = mimeType.startsWith("image")
+      ? res.body
+      : await res.text();
   },
 );
 
